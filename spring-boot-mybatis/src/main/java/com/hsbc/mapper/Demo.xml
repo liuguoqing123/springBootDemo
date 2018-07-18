@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hsbc.mapper.DemoMapper">
+
+	<resultMap type="com.hsbc.bean.Demo" id="resultRM">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="updateTime" column="update_time" />
+	</resultMap>
+
+	<insert id="save" useGeneratedKeys="true" keyProperty="id">
+		insert
+		into demo(name) values(#{name})
+	</insert>
+
+	<delete id="delete">
+		delete from demo where id = #{id}
+	</delete>
+
+	<update id="update">
+		update demo set name = #{name} where id = #{id}
+	</update>
+
+	<update id="update2">
+		update demo
+		<set>
+			<if test="name != null and name != '' ">
+				name = #{name},
+			</if>
+			<if test="updateTime != null and updateTime != '' ">
+				update_time = #{updateTime},
+			</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<select id="selectAll" resultMap="resultRM">
+		select * from demo
+	</select>
+
+	<select id="selectById" resultMap="resultRM">
+		select * from demo where id =
+		#{id}
+	</select>
+
+	<select id="select1" resultMap="resultRM">
+		select * from demo
+		<where>
+			<if test="name != null and name != '' ">
+				and name = #{name}
+			</if>
+			<if test="updateTime != null and updateTime != '' ">
+				and update_time = #{updateTime}
+			</if>
+		</where>
+	</select>
+	
+		<select id="select2" resultMap="resultRM">
+		select * from demo
+		<where>
+			<choose>
+				<when test="name != null and name != '' ">
+				name = #{name}
+				</when>
+				<when test="updateTime != null and updateTime != '' ">
+				and update_time = #{updateTime}
+				</when>
+				<otherwise>
+				</otherwise>
+			</choose>
+		</where>
+	</select>
+		<select id="select3" resultMap="resultRM">
+		select * from demo where id in
+		<foreach collection="list" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+		
+	</select>
+	
+</mapper>
